@@ -1,7 +1,6 @@
 // Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using System;
 using IdentityServerHost.Configuration;
 using IdentityModel;
@@ -40,7 +39,7 @@ namespace IdentityServerHost
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            
+
             // cookie policy to deal with temporary browser incompatibilities
             services.AddSameSiteCookiePolicy();
 
@@ -72,7 +71,7 @@ namespace IdentityServerHost
                 // [START of Usage of ldap]
                 .AddLdapUsers<OpenLdapAppUser>(_config.GetSection("IdentityServerLdap"), UserStore.InMemory)
                 .AddProfileService<HostProfileService>() // Upgraded for LDAP (see class for details).
-                // [END of usage of ldap]
+                                                         // [END of usage of ldap]
                 .AddCustomTokenRequestValidator<ParameterizedScopeTokenRequestValidator>()
                 .AddScopeParser<ParameterizedScopeParser>()
                 .AddMutualTlsSecretValidators();
@@ -86,7 +85,6 @@ namespace IdentityServerHost
             //         sql => sql.MigrationsAssembly(migrationsAssembly));
             // });
 
-
             services.AddExternalIdentityProviders();
 
             services.AddAuthentication()
@@ -95,9 +93,9 @@ namespace IdentityServerHost
                     options.AllowedCertificateTypes = CertificateTypes.All;
                     options.RevocationMode = X509RevocationMode.NoCheck;
                 });
-            
+
             services.AddCertificateForwardingForNginx();
-            
+
             services.AddLocalApiAuthentication(principal =>
             {
                 principal.Identities.First().AddClaim(new Claim("additional_claim", "additional_value"));
@@ -110,7 +108,7 @@ namespace IdentityServerHost
         {
             // use this for persisted grants store
             // app.InitializePersistedGrantsStore();
-            
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -118,7 +116,7 @@ namespace IdentityServerHost
 
             app.UseCertificateForwarding();
             app.UseCookiePolicy();
-            
+
             app.UseSerilogRequestLogging();
 
             app.UseDeveloperExceptionPage();
@@ -259,7 +257,7 @@ namespace IdentityServerHost
                 {
                     X509Certificate2 clientCertificate = null;
 
-                    if(!string.IsNullOrWhiteSpace(headerValue))
+                    if (!string.IsNullOrWhiteSpace(headerValue))
                     {
                         byte[] bytes = Encoding.UTF8.GetBytes(Uri.UnescapeDataString(headerValue));
                         clientCertificate = new X509Certificate2(bytes);
